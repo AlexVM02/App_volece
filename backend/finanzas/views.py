@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.conf import settings
 from .models import CuotaMensual
 from datetime import date
 from .serializers import CuotaMensualSerializer, UsuarioSerializer  # Importar los serializadores correctos
@@ -91,7 +92,7 @@ class MarcarCuotaPagadaView(generics.UpdateAPIView):
         if cuota.estado == 'pendiente':
             cuota.estado = 'pagado'
             cuota.fecha_pago = timezone.now()  # Asignar la fecha actual como fecha de pago
-            cuota.monto = 25  # Asegurarse de que el monto sea 25$
+            cuota.monto = settings.CUOTA_MENSUAL_DEFAULT
             cuota.save()
 
             return Response({
@@ -121,7 +122,7 @@ class CrearCuotasMensualesView(APIView):
             cuota, created = CuotaMensual.objects.get_or_create(
                 socio=socio, 
                 mes=mes_actual, 
-                defaults={'monto': 25.00, 'estado': 'pendiente'}
+                defaults={'monto': settings.CUOTA_MENSUAL_DEFAULT, 'estado': 'pendiente'}
             )
             if created:
                 print(f"Cuota creada para {socio.username} del mes {mes_actual}.")
