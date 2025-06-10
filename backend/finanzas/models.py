@@ -15,7 +15,11 @@ class CuotaMensual(models.Model):
     mes = models.DateField()  
     
     # Monto de la cuota, por defecto es $25
-    monto = models.DecimalField(max_digits=10, decimal_places=2, default=25)  
+    monto = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=settings.CUOTA_MENSUAL_DEFAULT
+    )
     
     # Estado de la cuota: 'pendiente' o 'pagado'
     estado = models.CharField(
@@ -39,7 +43,11 @@ class CuotaMensual(models.Model):
         Esto asegura que no se repita una cuota para el mismo mes.
         """
         # Verificar si ya existe una cuota registrada para el mismo socio y mes
-        if CuotaMensual.objects.filter(socio=self.socio, mes__year=self.mes.year, mes__month=self.mes.month).exists():
+        if CuotaMensual.objects.filter(
+            socio=self.socio,
+            mes__year=self.mes.year,
+            mes__month=self.mes.month
+        ).exclude(pk=self.pk).exists():
             raise ValidationError("Ya existe una cuota registrada para este mes.")
     
     def save(self, *args, **kwargs):
@@ -56,6 +64,7 @@ class CuotaMensual(models.Model):
         if self.estado == 'pendiente':
             self.estado = 'pagado'
             self.fecha_pago = timezone.now()  # Asignar la fecha actual como fecha de pago
+            self.monto = settings.CUOTA_MENSUAL_DEFAULT
             self.save()
 
     @classmethod
