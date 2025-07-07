@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'finanzas',
+    'gestion_vehiculos',
+    'gestion_transporte',
 ]
 
 MIDDLEWARE = [
@@ -156,6 +158,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,  # cantidad de vehículos por página
 }
 
 CORS_ALLOW_ALL_ORIGINS = True

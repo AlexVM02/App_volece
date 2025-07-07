@@ -10,6 +10,7 @@ from .views import EliminarUsuarioView
 from .views import EditarUsuarioView
 from .views import SolicitarRecuperacionPasswordView
 from .views import RestablecerPasswordView
+from .views import ListaTransportistas
 
 urlpatterns = [
     path('registro/', RegistroUsuarioView.as_view(), name='registro'),
@@ -22,4 +23,7 @@ urlpatterns = [
     path('editar/<int:pk>/', EditarUsuarioView.as_view(), name='editar-usuario'),
     path('recuperar-password/', SolicitarRecuperacionPasswordView.as_view(), name='recuperar_password'),
     path('restablecer-password/', RestablecerPasswordView.as_view(), name='restablecer-password'),
+    path('transportistas/', ListaTransportistas.as_view(), name='lista_transportistas'),
+
+
 ]

@@ -5,7 +5,7 @@ from django.contrib.auth.models import BaseUserManager
 class UsuarioManager(BaseUserManager):
     use_in_migrations = True
 
-    def create_user(self, username, email, password=None, first_name=None, last_name=None, cedula_ruc=None, rol='CLIENTE', **extra_fields):
+    def create_user(self, username, email, password=None, first_name=None, last_name=None, cedula_ruc=None, rol='CLIENTE', telefono= None, **extra_fields):
         if not email:
             raise ValueError('El usuario debe tener un email')
         email = self.normalize_email(email)
@@ -16,13 +16,14 @@ class UsuarioManager(BaseUserManager):
             last_name=last_name,
             cedula_ruc=cedula_ruc,
             rol=rol,
+            telefono=telefono,  
             **extra_fields
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, username, email, password, first_name=None, last_name=None, cedula_ruc=None, **extra_fields):
+    def create_superuser(self, username, email, password, first_name=None, last_name=None, cedula_ruc=None, telefono= None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -40,6 +41,8 @@ class UsuarioManager(BaseUserManager):
             last_name=last_name,
             cedula_ruc=cedula_ruc,
             rol='ADMIN',
+            telefono=telefono,
+            
             **extra_fields
         )
 
@@ -50,7 +53,8 @@ class Usuario(AbstractUser):
         ('CLIENTE', 'Cliente'),
     ]
     rol = models.CharField(max_length=10, choices=ROLES, default='CLIENTE')
-    cedula_ruc = models.CharField(max_length=20, unique=True)
+    cedula_ruc = models.CharField(max_length=12, unique=True)
+    telefono = models.CharField(max_length=10, blank=True, null=False)  
 
     objects = UsuarioManager()
 

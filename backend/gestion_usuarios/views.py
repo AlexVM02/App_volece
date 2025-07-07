@@ -20,6 +20,10 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
+#lista de transportistas
+from django.contrib.auth.models import User
+
+
 
 class RegistroUsuarioView(generics.CreateAPIView):
     queryset = Usuario.objects.all()
@@ -144,5 +148,22 @@ class RestablecerPasswordView(APIView):
         user.save()
 
         return Response({'message': 'Contraseña restablecida correctamente.'}, status=status.HTTP_200_OK)
-    
-    
+
+#Lista de transportistas
+
+class ListaTransportistas(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        Usuario = get_user_model()
+        transportistas = Usuario.objects.filter(rol='TRANSP')
+        data = [
+            {
+                'id': user.id,
+                'nombre': user.first_name,
+                'apellido': user.last_name,
+            }
+            for user in transportistas
+        ]
+        return Response(data)
+
